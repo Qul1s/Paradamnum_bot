@@ -17,7 +17,7 @@ def draw_chart(labels, data):
     },
    "options": {
     "plugins": {
-      "backgroundImageUrl": 'https://cdn.pixabay.com/photo/2022/01/24/10/53/10-53-48-156_960_720.png',
+      "backgroundImageUrl": 'https://cdn.pixabay.com/photo/2022/01/24/10/53/logo-6963157_960_720.png',
       "legend": False,
       "outlabels": {
         "text": "%l %p",
@@ -57,10 +57,10 @@ def draw_chart_for_category(value, sum):
           "trackColor": '#000000',
           "centerPercentage": 90,
           "centerArea": {
-              "text" : str(value/sum*100) + '%',
+              "text": str(value/sum*100) + '%',
           },
           "plugins": {
-              "backgroundImageUrl": 'https://cdn.pixabay.com/photo/2022/01/24/10/53/10-53-48-156_960_720.png',
+              "backgroundImageUrl": 'https://cdn.pixabay.com/photo/2022/01/24/10/53/logo-6963157_960_720.png',
           }
                 }
   }

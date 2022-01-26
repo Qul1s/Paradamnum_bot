@@ -190,3 +190,33 @@ def output_sum_category_expense(tg_id, category):
     conn.commit()
     return output_sum_category.fetchone()[0]
 
+def output_sum_expense_groupby_category(tg_id):
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    output_sum_category = cursor.execute("SELECT sum(value) FROM records WHERE user_id = ? and operation = False GROUP BY category", (tg_id,))
+    conn.commit()
+    output_sum_category_array= []
+    while True:
+        row = output_sum_category.fetchone()
+        if row == None:
+            break
+        else:
+            output_sum_category_array.append(row)
+    return output_sum_category_array
+
+
+def output_sum_earnings_groupby_category(tg_id):
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    output_sum_category = cursor.execute("SELECT sum(value) FROM records WHERE user_id = ? and operation = True GROUP BY category", (tg_id,))
+    conn.commit()
+    output_sum_category_array= []
+    while True:
+        row = output_sum_category.fetchone()
+        if row == None:
+            break
+        else:
+            output_sum_category_array.append(row)
+    return output_sum_category_array
+
+

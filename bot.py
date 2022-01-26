@@ -109,16 +109,15 @@ def all_earnings(message):
         client.send_message(message.chat.id, 'Вы еще не вносили ваш доход\nСделать это можно с помощью команды /operation')
     else:
         earnings = []
-        category_array=[]
-        value_array = []
         for i in all_earnings:
             category = "\nКатегория: " + str(i[0])
-            category_array.append(str(i[0]))
             value = "\nСумма: " + str(i[1])
-            value_array.append(str(i[1]))
             date = "\nДата и время: " + datetime.datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime('%d.%m | %H:%M | %a') + '\n'
             all = category + value + date
             earnings.append(all)
+
+        category_array = balanceController.output_all_add_category(message.chat.id)
+        value_array = balanceController.output_sum_earnings_groupby_category(message.chat.id)
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
         text = "Все твои доходы:" + str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
@@ -131,16 +130,15 @@ def all_expense(message):
         client.send_message(message.chat.id, 'Вы еще не вносили ваши расходы\nСделать это можно с помощью команды /operation')
     else:
         expense = []
-        category_array = []
-        value_array = []
         for i in all_expense:
             category = "\nКатегория: " + str(i[0])
-            category_array.append(str(i[0]))
             value = "\nСумма: " + str(i[1])
-            value_array.append(str(i[1]))
             date = "\nДата и время: " + datetime.datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime('%d.%m | %H:%M | %a')
             all = category + value + date
             expense.append(all)
+
+        category_array = balanceController.output_all_expense_category(message.chat.id)
+        value_array = balanceController.output_sum_expense_groupby_category(message.chat.id)
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
         text = "Все твои расходы:" + str(expense).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
@@ -215,10 +213,9 @@ def start(message):
 ##Функция изменения баланса
 def change_balance(message, call):
     if message.text.count(',') == 1:
-
         value = message.text.split(",")[0]
         category = message.text.split(",")[1]
-        if is_number(value) == True:
+        if is_number(value) == True and int(value) > 0 and int(value) < 2147483647 :
             if isinstance(category, str) == True:
                 if category[0] == ' ':
                     category = category[1:]
