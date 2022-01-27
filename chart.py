@@ -43,6 +43,8 @@ def draw_chart_for_category(value, sum):
   qc.height = 300
   qc.device_pixel_ratio = 2.0
 
+  percent_float = value/sum*100
+  percent = str(percent_float) + "%"
 
   qc.config = {
       "type": "radialGauge",
@@ -57,7 +59,7 @@ def draw_chart_for_category(value, sum):
           "trackColor": '#000000',
           "centerPercentage": 90,
           "centerArea": {
-              "text": str(value/sum*100) + '%',
+              "text": percent,
           },
           "plugins": {
               "backgroundImageUrl": 'https://cdn.pixabay.com/photo/2022/01/24/10/53/logo-6963157_960_720.png',

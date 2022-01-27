@@ -1,4 +1,7 @@
+import datetime
 import sqlite3
+from datetime import datetime, timedelta
+from dateutil.relativedelta import *
 
 def new_user(tg_id):
     conn = sqlite3.connect("F:/users.db")
@@ -218,5 +221,31 @@ def output_sum_earnings_groupby_category(tg_id):
         else:
             output_sum_category_array.append(row)
     return output_sum_category_array
+
+
+def output_subscribe_time(tg_id):
+        conn = sqlite3.connect("F:/users.db")
+        cursor = conn.cursor()
+        currentbalance = cursor.execute("SELECT subscribe_date FROM users WHERE user_id =?", (tg_id,))
+        conn.commit()
+        return currentbalance.fetchone()[0]
+
+
+def output_joindate(tg_id):
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    currentbalance = cursor.execute("SELECT joindate FROM users WHERE user_id =?", (tg_id,))
+    conn.commit()
+    return currentbalance.fetchone()[0]
+
+def change_subscribe_time(tg_id, startdate, month):
+    date = startdate + relativedelta(months=+int(month))
+    date = date.strftime("%Y-%m-%d %H:%M:%S")
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET subscribe_date = ? WHERE user_id = ?", (date, tg_id,))
+    conn.commit()
+    conn.close()
+
 
 

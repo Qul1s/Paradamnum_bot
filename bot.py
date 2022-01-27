@@ -2,8 +2,8 @@ import telebot
 import configure
 from telebot import types
 import balanceController
-import re
 import datetime
+from datetime import datetime
 import chart
 import urllib.request
 
@@ -79,8 +79,34 @@ def answer(call):
             month_expenses(call.message.chat.id, '02', 'Февраль: ')
         elif call.data == 'January_expense':
             month_expenses(call.message.chat.id, '01', 'Январь: ')
+
+        elif call.data == 'monthly':
+            client.send_message(call.message.chat.id, 'Ваша подписка продлена на месяц\nУ вас есть время до 22:00 на оплату подписки стоимостью 100 рублей\nВаш ID: ' + str(call.message.chat.id) + '\nОплата на карту:\n4441 1144 1244 6062\nВ комментариях указать ваш ID')
+            if balanceController.output_joindate(call.message.chat.id) == balanceController.output_subscribe_time(call.message.chat.id):
+                startdate = datetime.now()
+            else:
+                startdate = datetime.strptime(balanceController.output_subscribe_time(call.message.chat.id), "%Y-%m-%d %H:%M:%S")
+            balanceController.change_subscribe_time(call.message.chat.id, startdate,1)
+        elif call.data == 'six_monthly':
+            client.send_message(call.message.chat.id,
+                    'Ваша подписка продлена на 6 месяцев\nУ вас есть время до 22:00 на оплату подписки стоимостью 500 рублей\nВаш ID: ' + str(
+                        call.message.chat.id) + '\nОплата на карту:\n4441 1144 1244 6062\nВ комментариях указать ваш ID')
+            if balanceController.output_joindate(call.message.chat.id) == balanceController.output_subscribe_time(call.message.chat.id):
+                startdate = datetime.now()
+            else:
+                startdate = datetime.strptime(balanceController.output_subscribe_time(call.message.chat.id), "%Y-%m-%d %H:%M:%S")
+            balanceController.change_subscribe_time(call.message.chat.id, startdate,6)
+        elif call.data == 'yearly':
+            client.send_message(call.message.chat.id,
+                    'Ваша подписка продлена на год\nУ вас есть время до 22:00 на оплату подписки стоимостью 1000 рублей\nВаш ID: ' + str(
+                        call.message.chat.id) + '\nОплата на карту:\n4441 1144 1244 6062\nВ комментариях указать ваш ID')
+            if balanceController.output_joindate(call.message.chat.id) == balanceController.output_subscribe_time(call.message.chat.id):
+                startdate = datetime.now()
+            else:
+                startdate = datetime.strptime(balanceController.output_subscribe_time(call.message.chat.id), "%Y-%m-%d %H:%M:%S")
+            balanceController.change_subscribe_time(call.message.chat.id, startdate,12)
         else:
-            msg = client.send_message(call.message.chat.id, 'Где-то случилась ошибка')
+            client.send_message(call.message.chat.id, 'Где-то случилась ошибка')
 
 
 ##Показаль баланс
@@ -146,57 +172,72 @@ def all_expense(message):
 ##Вывести все доходы за определённый месяц
 @client.message_handler(commands = ['earningsmonth'])
 def earnings_month(message):
-    markup_inline = types.InlineKeyboardMarkup()
-    item_January = types.InlineKeyboardButton(text='Январь', callback_data='January')
-    item_February = types.InlineKeyboardButton(text='Февраль', callback_data='February')
-    item_March = types.InlineKeyboardButton(text='Март', callback_data='March')
-    item_April = types.InlineKeyboardButton(text='Апрель', callback_data='April')
-    item_May = types.InlineKeyboardButton(text='Май', callback_data='May')
-    item_June = types.InlineKeyboardButton(text='Июнь', callback_data='June')
-    item_July = types.InlineKeyboardButton(text='Июль', callback_data='July')
-    item_August = types.InlineKeyboardButton(text='Август', callback_data='August')
-    item_September = types.InlineKeyboardButton(text='Сентябрь', callback_data='September')
-    item_October = types.InlineKeyboardButton(text='Октябрь', callback_data='October')
-    item_November = types.InlineKeyboardButton(text='Ноябрь', callback_data='November')
-    item_December = types.InlineKeyboardButton(text='Декабрь', callback_data='December')
-    markup_inline.add(item_January, item_February, item_March, item_April, item_May, item_June, item_July, item_August, item_September, item_October, item_November, item_December)
-    client.send_message(message.chat.id, 'Выберите месяц, мой господин', reply_markup=markup_inline)
+    if check_for_subsribe(message.chat.id) == True:
+        markup_inline = types.InlineKeyboardMarkup()
+        item_January = types.InlineKeyboardButton(text='Январь', callback_data='January')
+        item_February = types.InlineKeyboardButton(text='Февраль', callback_data='February')
+        item_March = types.InlineKeyboardButton(text='Март', callback_data='March')
+        item_April = types.InlineKeyboardButton(text='Апрель', callback_data='April')
+        item_May = types.InlineKeyboardButton(text='Май', callback_data='May')
+        item_June = types.InlineKeyboardButton(text='Июнь', callback_data='June')
+        item_July = types.InlineKeyboardButton(text='Июль', callback_data='July')
+        item_August = types.InlineKeyboardButton(text='Август', callback_data='August')
+        item_September = types.InlineKeyboardButton(text='Сентябрь', callback_data='September')
+        item_October = types.InlineKeyboardButton(text='Октябрь', callback_data='October')
+        item_November = types.InlineKeyboardButton(text='Ноябрь', callback_data='November')
+        item_December = types.InlineKeyboardButton(text='Декабрь', callback_data='December')
+        markup_inline.add(item_January, item_February, item_March, item_April, item_May, item_June, item_July, item_August, item_September, item_October, item_November, item_December)
+        client.send_message(message.chat.id, 'Выберите месяц, мой господин', reply_markup=markup_inline)
+    else:
+        client.send_message(message.chat.id, 'У вас нет доступа к этой команде\nКупить подписку можно командой\n/subscription')
 ##Вывести все расходы за определенный месяц
 @client.message_handler(commands = ['expensesmonth'])
 def expenses_month(message):
-    markup_inline = types.InlineKeyboardMarkup()
-    item_January1 = types.InlineKeyboardButton(text='Январь', callback_data='January_expense')
-    item_February = types.InlineKeyboardButton(text='Февраль', callback_data='February_expense')
-    item_March = types.InlineKeyboardButton(text='Март', callback_data='March_expense')
-    item_April = types.InlineKeyboardButton(text='Апрель', callback_data='April_expense')
-    item_May = types.InlineKeyboardButton(text='Май', callback_data='May_expense')
-    item_June = types.InlineKeyboardButton(text='Июнь', callback_data='June_expense')
-    item_July = types.InlineKeyboardButton(text='Июль', callback_data='July_expense')
-    item_August = types.InlineKeyboardButton(text='Август', callback_data='August_expense')
-    item_September = types.InlineKeyboardButton(text='Сентябрь', callback_data='September_expense')
-    item_October = types.InlineKeyboardButton(text='Октябрь', callback_data='October_expense')
-    item_November = types.InlineKeyboardButton(text='Ноябрь', callback_data='November_expense')
-    item_December = types.InlineKeyboardButton(text='Декабрь', callback_data='December_expense')
-    markup_inline.add(item_January1, item_February, item_March, item_April, item_May, item_June, item_July, item_August, item_September, item_October, item_November, item_December)
-    client.send_message(message.chat.id, 'Выберите месяц, мой господин', reply_markup=markup_inline)
+    if check_for_subsribe(message.chat.id == True):
+        markup_inline = types.InlineKeyboardMarkup()
+        item_January1 = types.InlineKeyboardButton(text='Январь', callback_data='January_expense')
+        item_February = types.InlineKeyboardButton(text='Февраль', callback_data='February_expense')
+        item_March = types.InlineKeyboardButton(text='Март', callback_data='March_expense')
+        item_April = types.InlineKeyboardButton(text='Апрель', callback_data='April_expense')
+        item_May = types.InlineKeyboardButton(text='Май', callback_data='May_expense')
+        item_June = types.InlineKeyboardButton(text='Июнь', callback_data='June_expense')
+        item_July = types.InlineKeyboardButton(text='Июль', callback_data='July_expense')
+        item_August = types.InlineKeyboardButton(text='Август', callback_data='August_expense')
+        item_September = types.InlineKeyboardButton(text='Сентябрь', callback_data='September_expense')
+        item_October = types.InlineKeyboardButton(text='Октябрь', callback_data='October_expense')
+        item_November = types.InlineKeyboardButton(text='Ноябрь', callback_data='November_expense')
+        item_December = types.InlineKeyboardButton(text='Декабрь', callback_data='December_expense')
+        markup_inline.add(item_January1, item_February, item_March, item_April, item_May, item_June, item_July, item_August, item_September, item_October, item_November, item_December)
+        client.send_message(message.chat.id, 'Выберите месяц, мой господин', reply_markup=markup_inline)
+    else:
+        client.send_message(message.chat.id,
+                            'У вас нет доступа к этой команде\nКупить подписку можно командой\n/subscription')
 
 @client.message_handler(commands = ['earningscategory'])
 def categoryearnings(message):
-    output_all_category = str(balanceController.output_all_add_category(message.from_user.id))
-    output = str(output_all_category).replace("[", "").replace("'", "").replace("]", "").replace(",", "").replace("(",
-                                                                                                                  "").replace(
-        ") ", ", ").replace(")", " ")
-    client.send_message(message.chat.id, 'Введите категорию\nТвои категории дохода:\n' + output)
-    client.register_next_step_handler(message, category_earnings)
+    if check_for_subsribe(message.chat.id) == True:
+        output_all_category = str(balanceController.output_all_add_category(message.from_user.id))
+        output = str(output_all_category).replace("[", "").replace("'", "").replace("]", "").replace(",", "").replace("(",
+                                                                                                                      "").replace(
+            ") ", ", ").replace(")", " ")
+        client.send_message(message.chat.id, 'Введите категорию\nТвои категории дохода:\n' + output)
+        client.register_next_step_handler(message, category_earnings)
+    else:
+        client.send_message(message.chat.id,
+                            'У вас нет доступа к этой команде\nКупить подписку можно командой\n/subscription')
 
 @client.message_handler(commands = ['expensecategory'])
 def categoryexpense(message):
-    output_all_category = str(balanceController.output_all_expense_category(message.from_user.id))
-    output = str(output_all_category).replace("[", "").replace("'", "").replace("]", "").replace(",", "").replace("(",
-                                                                                                                  "").replace(
-        ") ", ", ").replace(")", " ")
-    client.send_message(message.chat.id, 'Введите категорию\nТвои категории расхода:\n' + output)
-    client.register_next_step_handler(message, category_expense)
+    if check_for_subsribe(message.chat.id == True):
+        output_all_category = str(balanceController.output_all_expense_category(message.from_user.id))
+        output = str(output_all_category).replace("[", "").replace("'", "").replace("]", "").replace(",", "").replace("(",
+                                                                                                                      "").replace(
+            ") ", ", ").replace(")", " ")
+        client.send_message(message.chat.id, 'Введите категорию\nТвои категории расхода:\n' + output)
+        client.register_next_step_handler(message, category_expense)
+    else:
+        client.send_message(message.chat.id,
+                            'У вас нет доступа к этой команде\nКупить подписку можно командой\n/subscription')
 
 ##Старт
 @client.message_handler(commands = ['start'])
@@ -209,7 +250,19 @@ def start(message):
 @client.message_handler(commands = ['developers'])
 def start(message):
         client.send_message(message.chat.id, 'Бот был создан: @retiunskykh')
-
+##Подписка
+@client.message_handler(commands = ['subscription'])
+def start(message):
+    subsribetime = datetime.strptime(balanceController.output_subscribe_time(message.chat.id), "%Y-%m-%d %H:%M:%S")
+    if check_for_subsribe(message.chat.id) == True:
+        client.send_message(message.chat.id, 'У вас есть подписка, которая действует до: ' + str(subsribetime.strftime('%Y-%m-%d')))
+    elif check_for_subsribe(message.chat.id) == False:
+        markup_inline = types.InlineKeyboardMarkup()
+        item_monthly = types.InlineKeyboardButton(text='1 месяц', callback_data='monthly')
+        item_six_monthly = types.InlineKeyboardButton(text='6 месяцев', callback_data='six_monthly')
+        item_yearly = types.InlineKeyboardButton(text='1 год', callback_data='yearly')
+        markup_inline.add(item_monthly, item_six_monthly, item_yearly)
+        client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\n1 месяц - 100 рублей\n6 месяцев - 500 рублей\n1 год - 1000 рублей', reply_markup=markup_inline)
 ##Функция изменения баланса
 def change_balance(message, call):
     if message.text.count(',') == 1:
@@ -346,6 +399,14 @@ def is_number(str):
         int(str)
         return True
     except ValueError:
+        return False
+
+def check_for_subsribe(tg_id):
+    now = datetime.now()
+    subsribetime = datetime.strptime(balanceController.output_subscribe_time(tg_id), "%Y-%m-%d %H:%M:%S")
+    if ( now <= subsribetime):
+        return True
+    elif ( now > subsribetime):
         return False
 
 client.polling(none_stop = True, interval= 0)
