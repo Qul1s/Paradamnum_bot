@@ -349,7 +349,7 @@ def category_earnings(message):
         for i in output_category_earnings:
             value = "\nСумма: " + str(i[1])
             value_array.append(str(i[1]))
-            date = "\nДата и время: " + datetime.datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime(
+            date = "\nДата и время: " + datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime(
                 '%d.%m | %H:%M | %a') + '\n'
             all = value + date
             category_earnings.append(all)
@@ -377,7 +377,7 @@ def category_expense(message):
         for i in output_category_expense:
             value = "\nСумма: " + str(i[1])
             value_array.append(str(i[1]))
-            date = "\nДата и время: " + datetime.datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime(
+            date = "\nДата и время: " + datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime(
                 '%d.%m | %H:%M | %a') + '\n'
             all = value + date
             category_expense.append(all)
