@@ -193,7 +193,7 @@ def earnings_month(message):
 ##Вывести все расходы за определенный месяц
 @client.message_handler(commands = ['expensesmonth'])
 def expenses_month(message):
-    if check_for_subsribe(message.chat.id == True):
+    if check_for_subsribe(message.chat.id) == True:
         markup_inline = types.InlineKeyboardMarkup()
         item_January1 = types.InlineKeyboardButton(text='Январь', callback_data='January_expense')
         item_February = types.InlineKeyboardButton(text='Февраль', callback_data='February_expense')
@@ -228,7 +228,7 @@ def categoryearnings(message):
 
 @client.message_handler(commands = ['expensecategory'])
 def categoryexpense(message):
-    if check_for_subsribe(message.chat.id == True):
+    if check_for_subsribe(message.chat.id) == True:
         output_all_category = str(balanceController.output_all_expense_category(message.from_user.id))
         output = str(output_all_category).replace("[", "").replace("'", "").replace("]", "").replace(",", "").replace("(",
                                                                                                                       "").replace(
@@ -299,19 +299,19 @@ def month_earnings(id, month, month_text):
         client.send_message(id, "У вас нет доходов за этот месяц")
     else:
         month_earnings = []
-        category_array = []
-        value_array = []
         for i in output_month_earnings:
             category = "\nКатегория: " + str(i[0])
-            category_array.append(str(i[0]))
             value = "\nСумма: " + str(i[1])
-            value_array.append(str(i[1]))
-            date = "\nДата и время: " + datetime.datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime(
+            date = "\nДата и время: " + datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime(
                 '%d.%m | %H:%M | %a') + '\n'
             all = category + value + date
             month_earnings.append(all)
+
+        category_array = balanceController.output_all_add_category_month(id, str(month))
+        value_array = balanceController.output_sum_earnings_groupby_category_month(id, str(month))
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
+
         text = "Все твои доходы за " + month_text + str(month_earnings).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
         client.send_photo(id, img, text)
 
@@ -323,18 +323,16 @@ def month_expenses(id, month, month_text):
         client.send_message(id, "У вас нет расходов за этот месяц")
     else:
         month_expenses = []
-        category_array = []
-        value_array = []
         for i in output_month_expenses:
             category = "\nКатегория: " + str(i[0])
-            category_array.append(str(i[0]))
             value = "\nСумма: " + str(i[1])
-            value_array.append(str(i[1]))
-            date = "\nДата и время: " + datetime.datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime(
+            date = "\nДата и время: " + datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime(
                 '%d.%m | %H:%M | %a') + '\n'
             all = category + value + date
             month_expenses.append(all)
 
+        category_array = balanceController.output_all_expense_category_month(id, str(month))
+        value_array = balanceController.output_sum_expense_groupby_category_month(id, str(month))
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
         text = "Все твои расходы за " + month_text + str(month_expenses).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")

@@ -1,6 +1,6 @@
 import datetime
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import *
 
 def new_user(tg_id):
@@ -121,9 +121,14 @@ def output_all_expense(tg_id):
 
 
 def output_month_earnings(tg_id, month):
+    now = datetime.now()
+    if int(now.month) < 6 and int(month) > 6:
+        year = int(now.year) - 1
+    else:
+        year = int(now.year)
     conn = sqlite3.connect("F:/users.db")
     cursor = conn.cursor()
-    month_earnings = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = True and strftime('%m', date) = ?", (tg_id, month))
+    month_earnings = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = True and strftime('%m', date) = ? and strftime('%Y', date) = ?", (tg_id, month, str(year),))
     conn.commit()
     all_month_earnings =[]
     while True:
@@ -135,9 +140,14 @@ def output_month_earnings(tg_id, month):
     return all_month_earnings
 
 def output_month_expenses(tg_id, month):
+    now = datetime.now()
+    if int(now.month) < 6 and int(month) > 6:
+        year = int(now.year) - 1
+    else:
+        year = int(now.year)
     conn = sqlite3.connect("F:/users.db")
     cursor = conn.cursor()
-    month_expenses = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = False and strftime('%m', date) = ?", (tg_id, month))
+    month_expenses = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ?", (tg_id, month, str(year),))
     conn.commit()
     all_month_expenses =[]
     while True:
@@ -224,11 +234,11 @@ def output_sum_earnings_groupby_category(tg_id):
 
 
 def output_subscribe_time(tg_id):
-        conn = sqlite3.connect("F:/users.db")
-        cursor = conn.cursor()
-        currentbalance = cursor.execute("SELECT subscribe_date FROM users WHERE user_id =?", (tg_id,))
-        conn.commit()
-        return currentbalance.fetchone()[0]
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    currentbalance = cursor.execute("SELECT subscribe_date FROM users WHERE user_id =?", (tg_id,))
+    conn.commit()
+    return currentbalance.fetchone()[0]
 
 
 def output_joindate(tg_id):
@@ -247,5 +257,83 @@ def change_subscribe_time(tg_id, startdate, month):
     conn.commit()
     conn.close()
 
+
+def output_all_add_category_month(tg_id, month):
+    now = datetime.now()
+    if int(now.month) < 6 and int(month) > 6:
+        year = int(now.year) - 1
+    else:
+        year = int(now.year)
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    all_category_earnings = cursor.execute("SELECT DISTINCT category FROM records WHERE user_id =? and operation = True and strftime('%m', date) =? and strftime('%Y', date) = ?", (tg_id, month, str(year),))
+    conn.commit()
+    all_category_earnings_array = []
+    while True:
+        row = all_category_earnings.fetchone()
+        if row == None:
+            break
+        else:
+            all_category_earnings_array.append(row)
+    return all_category_earnings_array
+
+
+def output_all_expense_category_month(tg_id, month):
+    now = datetime.now()
+    if int(now.month) < 6 and int(month) > 6:
+        year = int(now.year) - 1
+    else:
+        year = int(now.year)
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    all_category_expense = cursor.execute("SELECT DISTINCT category FROM records WHERE user_id =? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ?", (tg_id, month, str(year),))
+    conn.commit()
+    all_category_expense_array = []
+    while True:
+        row = all_category_expense.fetchone()
+        if row == None:
+            break
+        else:
+            all_category_expense_array.append(row)
+    return all_category_expense_array
+
+
+def output_sum_expense_groupby_category_month(tg_id, month):
+    now = datetime.now()
+    if int(now.month) < 6 and int(month) > 6:
+        year = int(now.year) - 1
+    else:
+        year = int(now.year)
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    output_sum_category = cursor.execute("SELECT sum(value) FROM records WHERE user_id = ? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ? GROUP BY category", (tg_id, month, str(year),))
+    conn.commit()
+    output_sum_category_array= []
+    while True:
+        row = output_sum_category.fetchone()
+        if row == None:
+            break
+        else:
+            output_sum_category_array.append(row)
+    return output_sum_category_array
+
+
+def output_sum_earnings_groupby_category_month(tg_id, month):
+    now = datetime.now()
+    if int(now.month) < 6 and int(month) > 6:
+        year = int(now.year) - 1
+    else:
+        year = int(now.year)
+    conn = sqlite3.connect("F:/users.db")
+    cursor = conn.cursor()
+    output_sum_category = cursor.execute("SELECT sum(value) FROM records WHERE user_id = ? and operation = True and strftime('%m', date) =? and strftime('%Y', date) = ? GROUP BY category", (tg_id, month, str(year),))
+    output_sum_category_array= []
+    while True:
+        row = output_sum_category.fetchone()
+        if row == None:
+            break
+        else:
+            output_sum_category_array.append(row)
+    return output_sum_category_array
 
 
