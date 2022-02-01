@@ -1,5 +1,4 @@
 telebot
 datetime
-sqlite3
 dateutil
 quickchart
