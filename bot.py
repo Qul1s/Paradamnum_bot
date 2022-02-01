@@ -187,7 +187,7 @@ def earnings_month(message):
         item_November = types.InlineKeyboardButton(text='Ноябрь', callback_data='November')
         item_December = types.InlineKeyboardButton(text='Декабрь', callback_data='December')
         markup_inline.add(item_January, item_February, item_March, item_April, item_May, item_June, item_July, item_August, item_September, item_October, item_November, item_December)
-        client.send_message(message.chat.id, 'Выберите месяц', reply_markup=markup_inline)
+        client.send_message(message.chat.id, 'Выберите месяц, мой господин', reply_markup=markup_inline)
     else:
         client.send_message(message.chat.id, 'У вас нет доступа к этой команде\nКупить подписку можно командой\n/subscription')
 ##Вывести все расходы за определенный месяц
@@ -208,7 +208,7 @@ def expenses_month(message):
         item_November = types.InlineKeyboardButton(text='Ноябрь', callback_data='November_expense')
         item_December = types.InlineKeyboardButton(text='Декабрь', callback_data='December_expense')
         markup_inline.add(item_January1, item_February, item_March, item_April, item_May, item_June, item_July, item_August, item_September, item_October, item_November, item_December)
-        client.send_message(message.chat.id, 'Выберите месяц', reply_markup=markup_inline)
+        client.send_message(message.chat.id, 'Выберите месяц, мой господин', reply_markup=markup_inline)
     else:
         client.send_message(message.chat.id,
                             'У вас нет доступа к этой команде\nКупить подписку можно командой\n/subscription')

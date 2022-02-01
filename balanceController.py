@@ -64,7 +64,7 @@ def add_to_all_expense(tg_id, value):
 def output_all_add_category(tg_id):
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    all_category_earnings = cursor.execute("SELECT DISTINCT category FROM records WHERE user_id =? and operation = True", (tg_id,))
+    all_category_earnings = cursor.execute("SELECT DISTINCT category FROM records WHERE user_id =? and operation = True GROUP BY category", (tg_id,))
     conn.commit()
     all_category_earnings_array = []
     while True:
@@ -266,7 +266,7 @@ def output_all_add_category_month(tg_id, month):
         year = int(now.year)
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    all_category_earnings = cursor.execute("SELECT DISTINCT category FROM records WHERE user_id =? and operation = True and strftime('%m', date) =? and strftime('%Y', date) = ?", (tg_id, month, str(year),))
+    all_category_earnings = cursor.execute("SELECT DISTINCT category FROM records WHERE user_id =? and operation = True and strftime('%m', date) =? and strftime('%Y', date) = ? GROUP BY category", (tg_id, month, str(year),))
     conn.commit()
     all_category_earnings_array = []
     while True:
@@ -286,7 +286,7 @@ def output_all_expense_category_month(tg_id, month):
         year = int(now.year)
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    all_category_expense = cursor.execute("SELECT DISTINCT category FROM records WHERE user_id =? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ?", (tg_id, month, str(year),))
+    all_category_expense = cursor.execute("SELECT DISTINCT category FROM records WHERE user_id =? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ? GROUP BY category", (tg_id, month, str(year),))
     conn.commit()
     all_category_expense_array = []
     while True:
