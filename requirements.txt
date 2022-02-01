@@ -1,4 +1,3 @@
 pyTelegramBotApi
-datetime
 python-dateutil
 quickchart.io
