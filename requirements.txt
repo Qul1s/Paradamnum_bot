@@ -1,4 +1,4 @@
 telebot
 datetime
-dateutil
+dateutil.relativedelta
 quickchart
