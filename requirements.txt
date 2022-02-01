@@ -1,4 +1,2 @@
-telebot
-from telebot import types
+pyTelegramBotApi
 datetime
-from datetime import datetime
