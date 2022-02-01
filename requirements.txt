@@ -1,0 +1,6 @@
+telebot
+datetime
+urllib.request
+sqlite3
+dateutil
+quickchart
