@@ -396,18 +396,23 @@ def check_for_subsribe(tg_id):
         return False
 
 def adminpanel_start(message):
-    id = message.text.split(",")[0]
-    month = message.text.split(",")[1]
-    if len(balanceController.search_user(id)) != 0:
-        if is_number(month) == True:
-            if balanceController.output_joindate(id) == balanceController.output_subscribe_time(id):
-                startdate = datetime.now()
+    if message.text.count(',') == 1:
+        value = message.text.split(",")[0]
+        category = message.text.split(",")[1]
+        id = message.text.split(",")[0]
+        month = message.text.split(",")[1]
+        if len(balanceController.search_user(id)) != 0:
+            if is_number(month) == True:
+                if balanceController.output_joindate(id) == balanceController.output_subscribe_time(id):
+                    startdate = datetime.now()
+                else:
+                    startdate = datetime.strptime(balanceController.output_subscribe_time(id), "%Y-%m-%d %H:%M:%S")
+                balanceController.change_subscribe_time(id, startdate, month)
             else:
-                startdate = datetime.strptime(balanceController.output_subscribe_time(id), "%Y-%m-%d %H:%M:%S")
-            balanceController.change_subscribe_time(id, startdate, month)
+                client.send_message(message.chat.id, 'Ты неправильно ввёл месяц')
         else:
-            client.send_message(message.chat.id, 'Ты неправильно ввёл месяц')
+            client.send_message(message.chat.id, 'Такого пользователя не существует')
     else:
-        client.send_message(message.chat.id, 'Такого пользователя не существует')
+        client.send_message(message.chat.id, 'Неправильный формат')
 
 client.polling(none_stop = True, interval= 0)
