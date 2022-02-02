@@ -234,7 +234,7 @@ def start(message):
     if check_for_subsribe(message.chat.id) == True:
         client.send_message(message.chat.id, 'У вас есть подписка, которая действует до: ' + str(subsribetime.strftime('%Y-%m-%d')))
     elif check_for_subsribe(message.chat.id) == False:
-        client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\nКаждый месяц - 99 рублей\n6 месяцев - 499 рублей\n1 год - 999 рублей\nИ оплатите заданную сумму на карту: 4441 1144 1244 6062\nВ комментариях указать свой ID: '+ str(message.chat.id))
+        client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\nДо 6 месяцев - 99 рублей/месяц\n6 месяцев - 499 рублей\n1 год - 999 рублей\nИ оплатите заданную сумму на карту: 4441 1144 1244 6062\nВ комментариях указать свой ID: '+ str(message.chat.id))
 ##АдминПанель
 @client.message_handler(commands = ['adminpanel'])
 def adminpanel(message):
