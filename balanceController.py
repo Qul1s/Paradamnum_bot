@@ -348,14 +348,7 @@ def output_month_sum_expense(tg_id, month):
         "SELECT sum(value) FROM records WHERE user_id = ? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ?",
         (tg_id, month, str(year),))
     conn.commit()
-    all_month_expenses = []
-    while True:
-        row = month_expenses.fetchone()
-        if row == None:
-            break
-        else:
-            all_month_expenses.append(row)
-    return all_month_expenses
+    return month_expenses.fetchone()[0]
 
 
 
@@ -367,18 +360,10 @@ def output_month_sum_earnings(tg_id, month):
         year = int(now.year)
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    month_expenses = cursor.execute(
+    month_earnings = cursor.execute(
         "SELECT sum(value) FROM records WHERE user_id = ? and operation = True and strftime('%m', date) =? and strftime('%Y', date) = ?",
         (tg_id, month, str(year),))
     conn.commit()
-    all_month_expenses = []
-    while True:
-        row = month_expenses.fetchone()
-        if row == None:
-            break
-        else:
-            all_month_expenses.append(row)
-    return all_month_expenses
-
+    return month_earnings.fetchone()[0]
 
 

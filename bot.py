@@ -122,7 +122,7 @@ def all_earnings(message):
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
         all_earnings_sum = str(balanceController.current_all_earnings(message.chat.id))
-        text = '\nВсего заработано: ' + all_earnings_sum + "Все твои доходы: " +  str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
+        text = '\nВсего заработано: ' + all_earnings_sum + "\nВсе твои доходы: " +  str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
         client.send_photo(message.chat.id, img, text)
 ##Вывести все расходы
 @client.message_handler(commands = ['allexpenses'])
@@ -144,7 +144,7 @@ def all_expense(message):
         all_expense_sum = str(balanceController.current_all_expense(message.chat.id))
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
-        text = '\nВсего потрачено: ' + all_expense_sum + "Все твои расходы:"+  str(expense).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
+        text = '\nВсего потрачено: ' + all_expense_sum + "\nВсе твои расходы:"+  str(expense).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
         client.send_photo(message.chat.id, img, text)
 ##Вывести все доходы за определённый месяц
 @client.message_handler(commands = ['earningsmonth'])
@@ -309,7 +309,7 @@ def month_expenses(id, month, month_text):
         url = chart.draw_chart(category_array, value_array)
         month_expense_sum = str(balanceController.output_month_sum_expense(id, str(month)))
         img = urllib.request.urlopen(url).read()
-        text = "Все твои расходы за " + month_text + '\nВсего потрачено: ' + month_expense_sum + str(month_expenses).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
+        text = '\nВсего потрачено: ' + month_expense_sum + "\nВсе твои расходы за " + month_text +  str(month_expenses).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
         client.send_photo(id, img, text)
 
 def category_earnings(message):
@@ -330,7 +330,7 @@ def category_earnings(message):
             all = value + date
             category_earnings.append(all)
 
-        text = "Всего заработано:  " + str(sum_category) + "Все твои доходы в категории " + category + ':\n' + str(category_earnings).replace("[", "").replace("'", "").replace("]",                                                                                                         "").replace(
+        text = "Всего заработано:  " + str(sum_category) + "\nВсе твои доходы в категории " + category + ':\n' + str(category_earnings).replace("[", "").replace("'", "").replace("]",                                                                                                         "").replace(
             ",", "").replace("\\n", "\n")
 
 
@@ -358,7 +358,7 @@ def category_expense(message):
                 '%d.%m | %H:%M | %a') + '\n'
             all = value + date
             category_expense.append(all)
-        text = '\nВсего потрачено: ' + sum_category + "Все твои доходы в категории " + category + ':' + str(category_expense).replace("[", "").replace("'", "").replace("]",
+        text = '\nВсего потрачено: ' + str(sum_category) + "\nВсе твои доходы в категории " + category + ':' + str(category_expense).replace("[", "").replace("'", "").replace("]",
                                                                                                                    "").replace(
             ",", "").replace("\\n", "\n")
 
