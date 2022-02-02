@@ -80,31 +80,6 @@ def answer(call):
         elif call.data == 'January_expense':
             month_expenses(call.message.chat.id, '01', 'Январь: ')
 
-        elif call.data == 'monthly':
-            client.send_message(call.message.chat.id, 'Ваша подписка продлена на месяц\nУ вас есть время до 22:00 на оплату подписки стоимостью 100 рублей\nВаш ID: ' + str(call.message.chat.id) + '\nОплата на карту:\n4441 1144 1244 6062\nВ комментариях указать ваш ID')
-            if balanceController.output_joindate(call.message.chat.id) == balanceController.output_subscribe_time(call.message.chat.id):
-                startdate = datetime.now()
-            else:
-                startdate = datetime.strptime(balanceController.output_subscribe_time(call.message.chat.id), "%Y-%m-%d %H:%M:%S")
-            balanceController.change_subscribe_time(call.message.chat.id, startdate,1)
-        elif call.data == 'six_monthly':
-            client.send_message(call.message.chat.id,
-                    'Ваша подписка продлена на 6 месяцев\nУ вас есть время до 22:00 на оплату подписки стоимостью 500 рублей\nВаш ID: ' + str(
-                        call.message.chat.id) + '\nОплата на карту:\n4441 1144 1244 6062\nВ комментариях указать ваш ID')
-            if balanceController.output_joindate(call.message.chat.id) == balanceController.output_subscribe_time(call.message.chat.id):
-                startdate = datetime.now()
-            else:
-                startdate = datetime.strptime(balanceController.output_subscribe_time(call.message.chat.id), "%Y-%m-%d %H:%M:%S")
-            balanceController.change_subscribe_time(call.message.chat.id, startdate,6)
-        elif call.data == 'yearly':
-            client.send_message(call.message.chat.id,
-                    'Ваша подписка продлена на год\nУ вас есть время до 22:00 на оплату подписки стоимостью 1000 рублей\nВаш ID: ' + str(
-                        call.message.chat.id) + '\nОплата на карту:\n4441 1144 1244 6062\nВ комментариях указать ваш ID')
-            if balanceController.output_joindate(call.message.chat.id) == balanceController.output_subscribe_time(call.message.chat.id):
-                startdate = datetime.now()
-            else:
-                startdate = datetime.strptime(balanceController.output_subscribe_time(call.message.chat.id), "%Y-%m-%d %H:%M:%S")
-            balanceController.change_subscribe_time(call.message.chat.id, startdate,12)
         else:
             client.send_message(call.message.chat.id, 'Где-то случилась ошибка')
 
@@ -146,7 +121,8 @@ def all_earnings(message):
         value_array = balanceController.output_sum_earnings_groupby_category(message.chat.id)
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
-        text = "Все твои доходы:" + str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
+        all_earnings_sum = balanceController.current_all_earnings(message.chat.id)
+        text = "Все твои доходы: " + '\nВсего заработано: ' + all_earnings_sum + str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
         client.send_photo(message.chat.id, img, text)
 ##Вывести все расходы
 @client.message_handler(commands = ['allexpenses'])
@@ -165,9 +141,10 @@ def all_expense(message):
 
         category_array = balanceController.output_all_expense_category(message.chat.id)
         value_array = balanceController.output_sum_expense_groupby_category(message.chat.id)
+        all_expense_sum = balanceController.current_all_expense(message.chat.id)
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
-        text = "Все твои расходы:" + str(expense).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
+        text = "Все твои расходы:"+ '\nВсего потрачено: ' + all_expense_sum + str(expense).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
         client.send_photo(message.chat.id, img, text)
 ##Вывести все доходы за определённый месяц
 @client.message_handler(commands = ['earningsmonth'])
@@ -243,7 +220,7 @@ def categoryexpense(message):
 @client.message_handler(commands = ['start'])
 def start(message):
         balanceController.new_user(message.from_user.id)
-        photo = open('F:/paradamnumprew.png', 'rb')
+        photo = open('paradamnumprew.png', 'rb')
         text = 'Привет, я бот, который поможет тебе контролировать твои денежные ресурсы!😎 \nТвой ID: ' + str(message.from_user.id)
         client.send_photo(message.chat.id, photo, text)
 ##Разработчики
@@ -253,17 +230,11 @@ def start(message):
 ##Подписка
 @client.message_handler(commands = ['subscription'])
 def start(message):
-
     subsribetime = datetime.strptime(balanceController.output_subscribe_time(message.chat.id), "%Y-%m-%d %H:%M:%S")
     if check_for_subsribe(message.chat.id) == True:
         client.send_message(message.chat.id, 'У вас есть подписка, которая действует до: ' + str(subsribetime.strftime('%Y-%m-%d')))
     elif check_for_subsribe(message.chat.id) == False:
-        markup_inline = types.InlineKeyboardMarkup()
-        item_monthly = types.InlineKeyboardButton(text='1 месяц', callback_data='monthly')
-        item_six_monthly = types.InlineKeyboardButton(text='6 месяцев', callback_data='six_monthly')
-        item_yearly = types.InlineKeyboardButton(text='1 год', callback_data='yearly')
-        markup_inline.add(item_monthly, item_six_monthly, item_yearly)
-        client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\n1 месяц - 100 рублей\n6 месяцев - 500 рублей\n1 год - 1000 рублей', reply_markup=markup_inline)
+        client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\nКаждый месяц - 99 рублей\n6 месяцев - 499 рублей\n1 год - 999 рублей\nИ оплатите заданную сумму на карту: 4441 1144 1244 6062\nВ комментариях указать свой ID: '+ str(message.chat.id))
 ##Функция изменения баланса
 def change_balance(message, call):
     if message.text.count(',') == 1:
@@ -312,8 +283,9 @@ def month_earnings(id, month, month_text):
         value_array = balanceController.output_sum_earnings_groupby_category_month(id, str(month))
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
+        month_earning_sum = str(balanceController.output_month_sum_earnings(id, str(month)))
 
-        text = "Все твои доходы за " + month_text + str(month_earnings).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
+        text = "Все твои доходы за " + month_text + '\nВсего заработано: ' + month_earning_sum + str(month_earnings).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
         client.send_photo(id, img, text)
 
 
@@ -335,8 +307,9 @@ def month_expenses(id, month, month_text):
         category_array = balanceController.output_all_expense_category_month(id, str(month))
         value_array = balanceController.output_sum_expense_groupby_category_month(id, str(month))
         url = chart.draw_chart(category_array, value_array)
+        month_expense_sum = str(balanceController.output_month_sum_expense(id, str(month)))
         img = urllib.request.urlopen(url).read()
-        text = "Все твои расходы за " + month_text + str(month_expenses).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
+        text = "Все твои расходы за " + month_text + '\nВсего потрачено: ' + month_expense_sum + str(month_expenses).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
         client.send_photo(id, img, text)
 
 def category_earnings(message):
@@ -345,6 +318,8 @@ def category_earnings(message):
     if len(output_category_earnings) == 0:
         client.send_message(message.chat.id, "У вас нет доходов в этой категории")
     else:
+        all_earnings = balanceController.current_all_earnings(message.chat.id)
+        sum_category = balanceController.output_sum_category(message.chat.id, category)
         category_earnings = []
         value_array = []
         for i in output_category_earnings:
@@ -354,12 +329,11 @@ def category_earnings(message):
                 '%d.%m | %H:%M | %a') + '\n'
             all = value + date
             category_earnings.append(all)
-        text = "Все твои доходы в категории " + category + ':' + str(category_earnings).replace("[", "").replace("'", "").replace("]",
+        text = "Все твои доходы в категории " + category + ':\n' "Всего заработано:  " + sum_category + str(category_earnings).replace("[", "").replace("'", "").replace("]",
                                                                                                                    "").replace(
             ",", "").replace("\\n", "\n")
 
-        all_earnings = balanceController.current_all_earnings(message.chat.id)
-        sum_category = balanceController.output_sum_category(message.chat.id, category)
+
         url = chart.draw_chart_for_category(sum_category, all_earnings)
         img = urllib.request.urlopen(url).read()
         client.send_photo(message.chat.id, img, text)
@@ -373,6 +347,8 @@ def category_expense(message):
     if len(output_category_expense) == 0:
         client.send_message(message.chat.id, "У вас нет расходов в этой категории")
     else:
+        all_expense = balanceController.current_all_expense(message.chat.id)
+        sum_category = balanceController.output_sum_category_expense(message.chat.id, category)
         category_expense = []
         value_array = []
         for i in output_category_expense:
@@ -382,12 +358,11 @@ def category_expense(message):
                 '%d.%m | %H:%M | %a') + '\n'
             all = value + date
             category_expense.append(all)
-        text = "Все твои доходы в категории " + category + ':' + str(category_expense).replace("[", "").replace("'", "").replace("]",
+        text = "Все твои доходы в категории " + category + ':' + '\nВсего потрачено: ' + sum_category + str(category_expense).replace("[", "").replace("'", "").replace("]",
                                                                                                                    "").replace(
             ",", "").replace("\\n", "\n")
 
-        all_expense = balanceController.current_all_expense(message.chat.id)
-        sum_category = balanceController.output_sum_category_expense(message.chat.id, category)
+
         url = chart.draw_chart_for_category(sum_category, all_expense)
         img = urllib.request.urlopen(url).read()
         client.send_photo(message.chat.id, img, text)

@@ -336,4 +336,49 @@ def output_sum_earnings_groupby_category_month(tg_id, month):
             output_sum_category_array.append(row)
     return output_sum_category_array
 
+def output_month_sum_expense(tg_id, month):
+    now = datetime.now()
+    if int(now.month) < 6 and int(month) > 6:
+        year = int(now.year) - 1
+    else:
+        year = int(now.year)
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    month_expenses = cursor.execute(
+        "SELECT sum(value) FROM records WHERE user_id = ? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ?",
+        (tg_id, month, str(year),))
+    conn.commit()
+    all_month_expenses = []
+    while True:
+        row = month_expenses.fetchone()
+        if row == None:
+            break
+        else:
+            all_month_expenses.append(row)
+    return all_month_expenses
+
+
+
+def output_month_sum_earnings(tg_id, month):
+    now = datetime.now()
+    if int(now.month) < 6 and int(month) > 6:
+        year = int(now.year) - 1
+    else:
+        year = int(now.year)
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    month_expenses = cursor.execute(
+        "SELECT sum(value) FROM records WHERE user_id = ? and operation = True and strftime('%m', date) =? and strftime('%Y', date) = ?",
+        (tg_id, month, str(year),))
+    conn.commit()
+    all_month_expenses = []
+    while True:
+        row = month_expenses.fetchone()
+        if row == None:
+            break
+        else:
+            all_month_expenses.append(row)
+    return all_month_expenses
+
+
 
