@@ -237,8 +237,9 @@ def start(message):
         client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\nДо 6 месяцев - 99 рублей/месяц\n6 месяцев - 499 рублей\n1 год - 999 рублей\nИ оплатите заданную сумму на карту: 4441 1144 1244 6062\nВ комментариях указать свой ID: '+ str(message.chat.id))
 ##АдминПанель
 @client.message_handler(commands = ['adminpanel'])
-def adminpanel(message):
+def start(message):
     if message.chat.id == 502102779:
+        client.send_message(message.chat.id, 'Введи id,количество месяцев')
         client.register_next_step_handler(message, adminpanel_start)
     else:
         client.send_message(message.chat.id, 'Ой, это команда только для создателя. Как вы вообще о ней узнали?')
