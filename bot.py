@@ -239,19 +239,7 @@ def start(message):
 @client.message_handler(commands = ['adminpanel'])
 def adminpanel(message):
     if message.chat.id == 502102779:
-        id = message.text.split(",")[0]
-        month = message.text.split(",")[1]
-        if len(balanceController.search_user(id)) != 0:
-            if is_number(month)== True:
-                if balanceController.output_joindate(id) == balanceController.output_subscribe_time(id):
-                    startdate = datetime.now()
-                else:
-                    startdate = datetime.strptime(balanceController.output_subscribe_time(id), "%Y-%m-%d %H:%M:%S")
-                balanceController.change_subscribe_time(id, startdate, month)
-            else:
-                client.send_message(message.chat.id, 'Ты неправильно ввёл месяц')
-        else:
-            client.send_message(message.chat.id, 'Такого пользователя не существует')
+        client.register_next_step_handler(message, adminpanel_start)
     else:
         client.send_message(message.chat.id, 'Ой, это команда только для создателя. Как вы вообще о ней узнали?')
 
@@ -405,5 +393,20 @@ def check_for_subsribe(tg_id):
         return True
     elif ( now > subsribetime):
         return False
+
+def adminpanel_start(message):
+    id = message.text.split(",")[0]
+    month = message.text.split(",")[1]
+    if len(balanceController.search_user(id)) != 0:
+        if is_number(month) == True:
+            if balanceController.output_joindate(id) == balanceController.output_subscribe_time(id):
+                startdate = datetime.now()
+            else:
+                startdate = datetime.strptime(balanceController.output_subscribe_time(id), "%Y-%m-%d %H:%M:%S")
+            balanceController.change_subscribe_time(id, startdate, month)
+        else:
+            client.send_message(message.chat.id, 'Ты неправильно ввёл месяц')
+    else:
+        client.send_message(message.chat.id, 'Такого пользователя не существует')
 
 client.polling(none_stop = True, interval= 0)
