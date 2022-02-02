@@ -121,7 +121,7 @@ def all_earnings(message):
         value_array = balanceController.output_sum_earnings_groupby_category(message.chat.id)
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
-        all_earnings_sum = balanceController.current_all_earnings(message.chat.id)
+        all_earnings_sum = str(balanceController.current_all_earnings(message.chat.id))
         text = "Все твои доходы: " + '\nВсего заработано: ' + all_earnings_sum + str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
         client.send_photo(message.chat.id, img, text)
 ##Вывести все расходы
@@ -141,7 +141,7 @@ def all_expense(message):
 
         category_array = balanceController.output_all_expense_category(message.chat.id)
         value_array = balanceController.output_sum_expense_groupby_category(message.chat.id)
-        all_expense_sum = balanceController.current_all_expense(message.chat.id)
+        all_expense_sum = str(balanceController.current_all_expense(message.chat.id))
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
         text = "Все твои расходы:"+ '\nВсего потрачено: ' + all_expense_sum + str(expense).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
