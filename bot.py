@@ -397,11 +397,9 @@ def check_for_subsribe(tg_id):
 
 def adminpanel_start(message):
     if message.text.count(',') == 1:
-        value = message.text.split(",")[0]
-        category = message.text.split(",")[1]
         id = message.text.split(",")[0]
         month = message.text.split(",")[1]
-        if len(balanceController.search_user(id)) != 0:
+        if is_number(balanceController.search_user(id)) == True:
             if is_number(month) == True:
                 if balanceController.output_joindate(id) == balanceController.output_subscribe_time(id):
                     startdate = datetime.now()
