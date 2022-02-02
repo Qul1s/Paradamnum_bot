@@ -406,6 +406,7 @@ def adminpanel_start(message):
                 else:
                     startdate = datetime.strptime(balanceController.output_subscribe_time(id), "%Y-%m-%d %H:%M:%S")
                 balanceController.change_subscribe_time(id, startdate, month)
+                client.send_message(message.chat.id, 'Успешно')
             else:
                 client.send_message(message.chat.id, 'Ты неправильно ввёл месяц')
         else:
