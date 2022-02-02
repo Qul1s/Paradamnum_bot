@@ -94,7 +94,7 @@ def output_all_expense_category(tg_id):
 def output_all_earnings(tg_id):
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    all_earnings = cursor.execute("SELECT category, value, date FROM records WHERE user_id =? and operation = True", (tg_id,))
+    all_earnings = cursor.execute("SELECT category, value, date FROM records WHERE user_id =? and operation = True LIMIT 50", (tg_id,))
     conn.commit()
     all_earnings_array = []
     while True:
@@ -108,7 +108,7 @@ def output_all_earnings(tg_id):
 def output_all_expense(tg_id):
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    all_expense = cursor.execute("SELECT category, value, date FROM records WHERE user_id =? and operation = False", (tg_id,))
+    all_expense = cursor.execute("SELECT category, value, date FROM records WHERE user_id =? and operation = False LIMIT 50", (tg_id,))
     conn.commit()
     all_expense_array = []
     while True:
@@ -128,7 +128,7 @@ def output_month_earnings(tg_id, month):
         year = int(now.year)
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    month_earnings = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = True and strftime('%m', date) = ? and strftime('%Y', date) = ?", (tg_id, month, str(year),))
+    month_earnings = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = True and strftime('%m', date) = ? and strftime('%Y', date) = ? LIMIT 50", (tg_id, month, str(year),))
     conn.commit()
     all_month_earnings =[]
     while True:
@@ -147,7 +147,7 @@ def output_month_expenses(tg_id, month):
         year = int(now.year)
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    month_expenses = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ?", (tg_id, month, str(year),))
+    month_expenses = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = False and strftime('%m', date) =? and strftime('%Y', date) = ? LIMIT 50", (tg_id, month, str(year),))
     conn.commit()
     all_month_expenses =[]
     while True:
@@ -162,7 +162,7 @@ def output_month_expenses(tg_id, month):
 def output_category_earnings(tg_id, category):
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    category_earnings = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = True and category = ?", (tg_id, category))
+    category_earnings = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = True and category = ? LIMIT 50", (tg_id, category))
     conn.commit()
     all_category_earnings =[]
     while True:
@@ -185,7 +185,7 @@ def output_sum_category(tg_id, category):
 def output_category_expense(tg_id, category):
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    category_expenses = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = False and category = ?", (tg_id, category))
+    category_expenses = cursor.execute("SELECT category, value, date FROM records WHERE user_id = ? and operation = False and category = ? LIMIT 50", (tg_id, category))
     conn.commit()
     all_category_expenses =[]
     while True:
