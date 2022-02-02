@@ -47,6 +47,13 @@ def new_cell(tg_id, operation, category, value):
     conn.commit()
     conn.close()
 
+def search_user(tg_id):
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    user = cursor.execute("SELECT user_id FROM users WHERE user_id =?", (tg_id,))
+    conn.commit()
+    return user.fetchone()[0]
+
 def add_to_all_earnings(tg_id, value):
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
@@ -256,6 +263,7 @@ def change_subscribe_time(tg_id, startdate, month):
     cursor.execute("UPDATE users SET subscribe_date = ? WHERE user_id = ?", (date, tg_id,))
     conn.commit()
     conn.close()
+
 
 
 def output_all_add_category_month(tg_id, month):

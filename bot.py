@@ -235,6 +235,29 @@ def start(message):
         client.send_message(message.chat.id, 'У вас есть подписка, которая действует до: ' + str(subsribetime.strftime('%Y-%m-%d')))
     elif check_for_subsribe(message.chat.id) == False:
         client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\nКаждый месяц - 99 рублей\n6 месяцев - 499 рублей\n1 год - 999 рублей\nИ оплатите заданную сумму на карту: 4441 1144 1244 6062\nВ комментариях указать свой ID: '+ str(message.chat.id))
+##АдминПанель
+@client.message_handler(commands = ['adminpanel'])
+def adminpanel(message):
+    if message.chat.id == 502102779:
+        id = message.text.split(",")[0]
+        month = message.text.split(",")[1]
+        if len(balanceController.search_user(id)) != 0:
+            if is_number(month)== True:
+                if balanceController.output_joindate(id) == balanceController.output_subscribe_time(id):
+                    startdate = datetime.now()
+                else:
+                    startdate = datetime.strptime(balanceController.output_subscribe_time(id), "%Y-%m-%d %H:%M:%S")
+                balanceController.change_subscribe_time(id, startdate, month)
+            else:
+                client.send_message(message.chat.id, 'Ты неправильно ввёл месяц')
+        else:
+            client.send_message(message.chat.id, 'Такого пользователя не существует')
+    else:
+        client.send_message(message.chat.id, 'Ой, это команда только для создателя. Как вы вообще о ней узнали?')
+
+
+
+
 ##Функция изменения баланса
 def change_balance(message, call):
     if message.text.count(',') == 1:
