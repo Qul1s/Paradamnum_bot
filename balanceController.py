@@ -50,7 +50,7 @@ def new_cell(tg_id, operation, category, value):
 def search_user(tg_id):
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
-    user = cursor.execute("SELECT user_id FROM users WHERE user_id =?", (tg_id,))
+    user = cursor.execute("SELECT count(user_id) FROM users WHERE user_id =?", (tg_id,))
     conn.commit()
     return user.fetchone()[0]
 

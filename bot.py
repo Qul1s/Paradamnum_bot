@@ -399,7 +399,7 @@ def adminpanel_start(message):
     if message.text.count(',') == 1:
         id = message.text.split(",")[0]
         month = message.text.split(",")[1]
-        if is_number(balanceController.search_user(id)) == True:
+        if balanceController.search_user(id) == 1:
             if is_number(month) == True:
                 if balanceController.output_joindate(id) == balanceController.output_subscribe_time(id):
                     startdate = datetime.now()
