@@ -1,3 +1,0 @@
-pyTelegramBotApi
-python-dateutil
-quickchart.io

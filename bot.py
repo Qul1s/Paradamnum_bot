@@ -122,7 +122,7 @@ def all_earnings(message):
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
         all_earnings_sum = str(balanceController.current_all_earnings(message.chat.id))
-        text = '\nВсего заработано: ' + all_earnings_sum + "\nВсе твои доходы: " +  str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
+        text = "\nВсе твои доходы: " +  str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n") + 'Всего заработано: ' + all_earnings_sum
         client.send_message(message.chat.id, text)
         client.send_photo(message.chat.id, img)
 
@@ -146,7 +146,7 @@ def all_expense(message):
         all_expense_sum = str(balanceController.current_all_expense(message.chat.id))
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
-        text = '\nВсего потрачено: ' + all_expense_sum + "\nВсе твои расходы:"+  str(expense).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n")
+        text = "\nВсе твои расходы:"+  str(expense).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n") + '\nВсего потрачено: ' + all_expense_sum
         client.send_message(message.chat.id, text)
         client.send_photo(message.chat.id, img)
 
@@ -247,8 +247,10 @@ def start(message):
         client.register_next_step_handler(message, adminpanel_start)
     else:
         client.send_message(message.chat.id, 'Ой, это команда только для создателя. Как вы вообще о ней узнали?')
-
-
+@client.message_handler(commands = ['deleterecord'])
+def start(message):
+    client.send_message(message.chat.id, 'Введи сумму, категорию, дату\nНапример: 200, Еда, 2022-02-12 10:00')
+    client.register_next_step_handler(message, delete_record)
 
 
 ##Функция изменения баланса
@@ -301,7 +303,7 @@ def month_earnings(id, month, month_text):
         img = urllib.request.urlopen(url).read()
         month_earning_sum = str(balanceController.output_month_sum_earnings(id, str(month)))
 
-        text = "Все твои доходы за " + month_text + '\nВсего заработано: ' + month_earning_sum + str(month_earnings).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
+        text = "Все твои доходы за " + month_text + str(month_earnings).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n") + '\nВсего заработано: ' + month_earning_sum
         client.send_message(id, text)
         client.send_photo(id, img)
 
@@ -327,7 +329,7 @@ def month_expenses(id, month, month_text):
         url = chart.draw_chart(category_array, value_array)
         month_expense_sum = str(balanceController.output_month_sum_expense(id, str(month)))
         img = urllib.request.urlopen(url).read()
-        text = '\nВсего потрачено: ' + month_expense_sum + "\nВсе твои расходы за " + month_text +  str(month_expenses).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")
+        text = "\nВсе твои расходы за " + month_text +  str(month_expenses).replace("[", "").replace("'", "").replace("]", "").replace(",","").replace("\\n", "\n")+'\nВсего потрачено: ' + month_expense_sum
         client.send_message(id, text)
         client.send_photo(id, img)
 
@@ -350,8 +352,8 @@ def category_earnings(message):
             all = value + date
             category_earnings.append(all)
 
-        text = "Всего заработано:  " + str(sum_category) + "\nВсе твои доходы в категории " + category + ':\n' + str(category_earnings).replace("[", "").replace("'", "").replace("]",                                                                                                         "").replace(
-            ",", "").replace("\\n", "\n")
+        text = "\nВсе твои доходы в категории " + category + ':\n' + str(category_earnings).replace("[", "").replace("'", "").replace("]",                                                                                                         "").replace(
+            ",", "").replace("\\n", "\n") + "Всего заработано:  " + str(sum_category)
 
 
         url = chart.draw_chart_for_category(sum_category, all_earnings)
@@ -380,9 +382,9 @@ def category_expense(message):
                 '%d.%m | %H:%M | %a') + '\n'
             all = value + date
             category_expense.append(all)
-        text = '\nВсего потрачено: ' + str(sum_category) + "\nВсе твои доходы в категории " + category + ':' + str(category_expense).replace("[", "").replace("'", "").replace("]",
+        text =  "\nВсе твои доходы в категории " + category + ':' + str(category_expense).replace("[", "").replace("'", "").replace("]",
                                                                                                                    "").replace(
-            ",", "").replace("\\n", "\n")
+            ",", "").replace("\\n", "\n") + '\nВсего потрачено: ' + str(sum_category)
 
 
         url = chart.draw_chart_for_category(sum_category, all_expense)
@@ -395,6 +397,13 @@ def category_expense(message):
 def is_number(str):
     try:
         int(str)
+        return True
+    except ValueError:
+        return False
+
+def is_date(str):
+    try:
+        datetime.strptime(str, '%Y-%m-%d %H:%M')
         return True
     except ValueError:
         return False
@@ -425,5 +434,30 @@ def adminpanel_start(message):
             client.send_message(message.chat.id, 'Такого пользователя не существует')
     else:
         client.send_message(message.chat.id, 'Неправильный формат')
+
+def delete_record(message):
+    if message.text.count(',') == 2:
+        value = message.text.split(",")[0]
+        category = message.text.split(",")[1]
+        date = message.text.split(",")[2]
+        if date[0] == ' ':
+            date = date[1:]
+        if is_number(value) == True and int(value) > 0 and int(value) < 2147483647 :
+            if isinstance(category, str) == True:
+                if is_date(date) == True:
+                    if category[0] == ' ':
+                        category = category[1:]
+                    if balanceController.check_for_record(message.chat.id, value, category, date) == 1:
+                        balanceController.delete_record(message.chat.id, value, category, date)
+                        client.send_message(message.chat.id, 'Запись успешно удалена')
+                    else: client.send_message(message.chat.id, 'Запись не найдена')
+                else: client.send_message(message.chat.id, 'Неправильно введена дата')
+            else:
+                client.send_message(message.chat.id, 'Ошибка ввода: категория введена неверно')
+        else:
+            client.send_message(message.chat.id, 'Ошибка ввода: число не является целым')
+    else:
+        client.send_message(message.chat.id, 'Ошибка ввода: неправильный формат')
+
 
 client.polling(none_stop = True, interval= 0)
