@@ -7,7 +7,7 @@ from datetime import datetime
 import chart
 import urllib.request
 
-
+#Токен
 client = telebot.TeleBot(configure.config['token'])
 
 @client.message_handler(commands = ['operation'])
@@ -53,7 +53,6 @@ def answer(call):
             month_earnings(call.message.chat.id, '02', 'Февраль: ')
         elif call.data == 'January':
             month_earnings(call.message.chat.id, '01', 'Январь: ')
-
     ##Расходы
         elif call.data == 'December_expense':
             month_expenses(call.message.chat.id, '12', 'Декабрь: ')
@@ -193,7 +192,7 @@ def expenses_month(message):
     else:
         client.send_message(message.chat.id,
                             'У вас нет доступа к этой команде\nКупить подписку можно командой\n/subscription')
-
+#Вывод доходов в заданной категории
 @client.message_handler(commands = ['earningscategory'])
 def categoryearnings(message):
     if check_for_subsribe(message.chat.id) == True:
@@ -206,7 +205,7 @@ def categoryearnings(message):
     else:
         client.send_message(message.chat.id,
                             'У вас нет доступа к этой команде\nКупить подписку можно командой\n/subscription')
-
+#Вывод расходов в заданной категории
 @client.message_handler(commands = ['expensecategory'])
 def categoryexpense(message):
     if check_for_subsribe(message.chat.id) == True:
@@ -247,12 +246,15 @@ def start(message):
         client.register_next_step_handler(message, adminpanel_start)
     else:
         client.send_message(message.chat.id, 'Ой, это команда только для создателя. Как вы вообще о ней узнали?')
+#Удалить запись
 @client.message_handler(commands = ['deleterecord'])
 def start(message):
     client.send_message(message.chat.id, 'Введи сумму, категорию, дату\nНапример: 200, Еда, 2022-02-12 10:00')
     client.register_next_step_handler(message, delete_record)
-
-
+#Ввод случайного текста
+@client.message_handler(content_types='text')
+def start(message):
+    client.send_message(message.chat.id, 'Cначала введите команду😄')
 ##Функция изменения баланса
 def change_balance(message, call):
     if message.text.count(',') == 1:
@@ -333,7 +335,7 @@ def month_expenses(id, month, month_text):
         client.send_message(id, text)
         client.send_photo(id, img)
 
-
+##Функция вывода дохода по категории
 def category_earnings(message):
     category = message.text
     output_category_earnings = balanceController.output_category_earnings(message.chat.id, category)
@@ -360,11 +362,7 @@ def category_earnings(message):
         img = urllib.request.urlopen(url).read()
         client.send_message(message.chat.id, text)
         client.send_photo(message.chat.id, img)
-
-
-
-
-
+##Функция вывода расхода по категории
 def category_expense(message):
     category = message.text
     output_category_expense = balanceController.output_category_expense(message.chat.id, category)
@@ -392,22 +390,21 @@ def category_expense(message):
         client.send_message(message.chat.id, text)
         client.send_photo(message.chat.id, img)
 
-
-
+#Функция проверки на число
 def is_number(str):
     try:
         int(str)
         return True
     except ValueError:
         return False
-
+#Функция проверки на дату
 def is_date(str):
     try:
         datetime.strptime(str, '%Y-%m-%d %H:%M')
         return True
     except ValueError:
         return False
-
+#Проверка на подписку
 def check_for_subsribe(tg_id):
     now = datetime.now()
     subsribetime = datetime.strptime(balanceController.output_subscribe_time(tg_id), "%Y-%m-%d %H:%M:%S")
@@ -415,7 +412,7 @@ def check_for_subsribe(tg_id):
         return True
     elif ( now > subsribetime):
         return False
-
+#АдминПанель
 def adminpanel_start(message):
     if message.text.count(',') == 1:
         id = message.text.split(",")[0]
@@ -434,7 +431,7 @@ def adminpanel_start(message):
             client.send_message(message.chat.id, 'Такого пользователя не существует')
     else:
         client.send_message(message.chat.id, 'Неправильный формат')
-
+#Удалить запись(метод)
 def delete_record(message):
     if message.text.count(',') == 2:
         value = message.text.split(",")[0]
@@ -459,5 +456,5 @@ def delete_record(message):
     else:
         client.send_message(message.chat.id, 'Ошибка ввода: неправильный формат')
 
-
+#Важная фигня, всегда в конце
 client.polling(none_stop = True, interval= 0)
