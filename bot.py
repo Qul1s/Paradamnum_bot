@@ -21,15 +21,16 @@ def get_user_info(message):
 @client.callback_query_handler(func=lambda call:True)
 def answer(call):
     ##Запись
-        if call.data == 'Add':
-            msg = client.send_message(call.message.chat.id, 'Сколько же ты заработал, мой милый друг?\nФормат: Сумма, Категория')
-            client.register_next_step_handler(msg, change_balance, call)
-        elif call.data == 'Expense':
-            msg = client.send_message(call.message.chat.id, 'Какая сумма была потрачена?\nФормат: Сумма, Категория')
-            client.register_next_step_handler(msg, change_balance, call)
 
+        match call.data:
+            case 'Add':
+                msg = client.send_message(call.message.chat.id, 'Сколько же ты заработал, мой милый друг?\nФормат: Сумма, Категория')
+                client.register_next_step_handler(msg, change_balance, call)
+            case 'Expense':
+                msg = client.send_message(call.message.chat.id, 'Какая сумма была потрачена?\nФормат: Сумма, Категория')
+                client.register_next_step_handler(msg, change_balance, call)
     ##Доходы
-        elif call.data == 'December':
+        if call.data == 'December':
             month_earnings(call.message.chat.id, '12', 'Декабрь: ')
         elif call.data == 'November':
             month_earnings(call.message.chat.id, '11', 'Ноябрь: ')
@@ -79,6 +80,10 @@ def answer(call):
         elif call.data == 'January_expense':
             month_expenses(call.message.chat.id, '01', 'Январь: ')
 
+
+        elif call.data == 'FAQ':
+            photo = open('FAQ.png', 'rb')
+            client.send_photo(call.message.chat.id, photo)
         else:
             client.send_message(call.message.chat.id, 'Где-то случилась ошибка')
 
@@ -110,9 +115,9 @@ def all_earnings(message):
     else:
         earnings = []
         for i in all_earnings:
-            category = "\nКатегория: " + str(i[0])
+            category = "\n\nКатегория: " + str(i[0])
             value = "\nСумма: " + str(i[1])
-            date = "\nДата и время: " + datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime('%d.%m | %H:%M | %a') + '\n'
+            date = "\nДата и время: " + datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime('%d.%m | %H:%M | %a')
             all = category + value + date
             earnings.append(all)
 
@@ -121,7 +126,7 @@ def all_earnings(message):
         url = chart.draw_chart(category_array, value_array)
         img = urllib.request.urlopen(url).read()
         all_earnings_sum = str(balanceController.current_all_earnings(message.chat.id))
-        text = "\nВсе твои доходы: " +  str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n") + 'Всего заработано: ' + all_earnings_sum
+        text = "\nВсе твои доходы: " +  str(earnings).replace("[","").replace("'", "").replace("]","").replace(",", "").replace("\\n", "\n") + '\nВсего заработано: ' + all_earnings_sum
         client.send_message(message.chat.id, text)
         client.send_photo(message.chat.id, img)
 
@@ -134,7 +139,7 @@ def all_expense(message):
     else:
         expense = []
         for i in all_expense:
-            category = "\nКатегория: " + str(i[0])
+            category = "\n\nКатегория: " + str(i[0])
             value = "\nСумма: " + str(i[1])
             date = "\nДата и время: " + datetime.strptime(str(i[2]), '%Y-%m-%d %H:%M:%S').strftime('%d.%m | %H:%M | %a')
             all = category + value + date
@@ -224,8 +229,11 @@ def categoryexpense(message):
 def start(message):
         balanceController.new_user(message.from_user.id)
         photo = open('paradamnumprew.png', 'rb')
-        text = 'Привет, я бот, который поможет тебе контролировать твои денежные ресурсы!😎 \nТвой ID: ' + str(message.from_user.id)
-        client.send_photo(message.chat.id, photo, text)
+        text = 'Привет, я бот, который поможет тебе контролировать твои денежные ресурсы!😎 \nТвой ID: ' + str(message.from_user.id) + '\nУзнать возможности бота можно по кнопке ниже'
+        markup_inline = types.InlineKeyboardMarkup()
+        faq = types.InlineKeyboardButton(text='Узнать возможности', callback_data='FAQ')
+        markup_inline.add(faq)
+        client.send_photo(message.chat.id, photo, text, reply_markup=markup_inline)
 ##Разработчики
 @client.message_handler(commands = ['developers'])
 def start(message):
@@ -237,7 +245,7 @@ def start(message):
     if check_for_subsribe(message.chat.id) == True:
         client.send_message(message.chat.id, 'У вас есть подписка, которая действует до: ' + str(subsribetime.strftime('%Y-%m-%d')))
     elif check_for_subsribe(message.chat.id) == False:
-        client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\nДо 6 месяцев - 99 рублей/месяц\n6 месяцев - 499 рублей\n1 год - 999 рублей\nИ оплатите заданную сумму на карту: 4441 1144 1244 6062\nВ комментариях указать свой ID: '+ str(message.chat.id))
+        client.send_message(message.chat.id, 'У вас нет подписки\nЧтобы купить подписку выберите тариф снизу\nДо 6 месяцев - 99 рублей/месяц\n6 месяцев - 499 рублей\n1 год - 999 рублей\nПо поводу покупки писать: @retiunskykh\nИли оплатите заданную сумму на карту: 4441 1144 1244 6062\nВ комментариях указать свой ID: '+ str(message.chat.id))
 ##АдминПанель
 @client.message_handler(commands = ['adminpanel'])
 def start(message):
@@ -251,6 +259,12 @@ def start(message):
 def start(message):
     client.send_message(message.chat.id, 'Введи сумму, категорию, дату\nНапример: 200, Еда, 2022-02-12 10:00')
     client.register_next_step_handler(message, delete_record)
+
+
+@client.message_handler(commands = ['FAQ'])
+def start(message):
+    photo = open('FAQ.png', 'rb')
+    client.send_photo(message.chat.id, photo)
 #Ввод случайного текста
 @client.message_handler(content_types='text')
 def start(message):
