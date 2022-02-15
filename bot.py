@@ -29,63 +29,57 @@ def answer(call):
             case 'Expense':
                 msg = client.send_message(call.message.chat.id, 'Какая сумма была потрачена?\nФормат: Сумма, Категория')
                 client.register_next_step_handler(msg, change_balance, call)
-    ##Доходы
-        if call.data == 'December':
-            month_earnings(call.message.chat.id, '12', 'Декабрь: ')
-        elif call.data == 'November':
-            month_earnings(call.message.chat.id, '11', 'Ноябрь: ')
-        elif call.data == 'October':
-            month_earnings(call.message.chat.id, '10', 'Октябрь: ')
-        elif call.data == 'September':
-            month_earnings(call.message.chat.id, '09', 'Сентябрь: ')
-        elif call.data == 'August':
-            month_earnings(call.message.chat.id, '08', 'Август: ')
-        elif call.data == 'July':
-            month_earnings(call.message.chat.id, '07', 'Июль: ')
-        elif call.data == 'June':
-            month_earnings(call.message.chat.id, '06', 'Июнь: ')
-        elif call.data == 'May':
-            month_earnings(call.message.chat.id, '05', 'Май: ')
-        elif call.data == 'April':
-            month_earnings(call.message.chat.id, '04', 'Апрель: ')
-        elif call.data == 'March':
-            month_earnings(call.message.chat.id, '03', 'Март: ')
-        elif call.data == 'February':
-            month_earnings(call.message.chat.id, '02', 'Февраль: ')
-        elif call.data == 'January':
-            month_earnings(call.message.chat.id, '01', 'Январь: ')
-    ##Расходы
-        elif call.data == 'December_expense':
-            month_expenses(call.message.chat.id, '12', 'Декабрь: ')
-        elif call.data == 'November_expense':
-            month_expenses(call.message.chat.id, '11', 'Ноябрь: ')
-        elif call.data == 'October_expense':
-            month_expenses(call.message.chat.id, '10', 'Октябрь: ')
-        elif call.data == 'September_expense':
-            month_expenses(call.message.chat.id, '09', 'Сентябрь: ')
-        elif call.data == 'August_expense':
-            month_expenses(call.message.chat.id, '08', 'Август: ')
-        elif call.data == 'July_expense':
-            month_expenses(call.message.chat.id, '07', 'Июль: ')
-        elif call.data == 'June_expense':
-            month_expenses(call.message.chat.id, '06', 'Июнь: ')
-        elif call.data == 'May_expense':
-            month_expenses(call.message.chat.id, '05', 'Май: ')
-        elif call.data == 'April_expense':
-            month_expenses(call.message.chat.id, '04', 'Апрель: ')
-        elif call.data == 'March_expense':
-            month_expenses(call.message.chat.id, '03', 'Март: ')
-        elif call.data == 'February_expense':
-            month_expenses(call.message.chat.id, '02', 'Февраль: ')
-        elif call.data == 'January_expense':
-            month_expenses(call.message.chat.id, '01', 'Январь: ')
-
-
-        elif call.data == 'FAQ':
-            photo = open('FAQ.png', 'rb')
-            client.send_photo(call.message.chat.id, photo)
-        else:
-            client.send_message(call.message.chat.id, 'Где-то случилась ошибка')
+            case 'December':
+                month_earnings(call.message.chat.id, '12', 'Декабрь: ')
+            case 'November':
+                month_earnings(call.message.chat.id, '11', 'Ноябрь: ')
+            case 'October':
+                month_earnings(call.message.chat.id, '10', 'Октябрь: ')
+            case'September':
+                month_earnings(call.message.chat.id, '09', 'Сентябрь: ')
+            case 'August':
+                month_earnings(call.message.chat.id, '08', 'Август: ')
+            case 'July':
+                month_earnings(call.message.chat.id, '07', 'Июль: ')
+            case 'June':
+                month_earnings(call.message.chat.id, '06', 'Июнь: ')
+            case 'May':
+                month_earnings(call.message.chat.id, '05', 'Май: ')
+            case 'April':
+                month_earnings(call.message.chat.id, '04', 'Апрель: ')
+            case 'March':
+                month_earnings(call.message.chat.id, '03', 'Март: ')
+            case 'February':
+                month_earnings(call.message.chat.id, '02', 'Февраль: ')
+            case 'January':
+                month_earnings(call.message.chat.id, '01', 'Январь: ')
+            case 'December_expense':
+                month_expenses(call.message.chat.id, '12', 'Декабрь: ')
+            case 'November_expense':
+                month_expenses(call.message.chat.id, '11', 'Ноябрь: ')
+            case 'October_expense':
+                month_expenses(call.message.chat.id, '10', 'Октябрь: ')
+            case 'September_expense':
+                month_expenses(call.message.chat.id, '09', 'Сентябрь: ')
+            case 'August_expense':
+                month_expenses(call.message.chat.id, '08', 'Август: ')
+            case 'July_expense':
+                month_expenses(call.message.chat.id, '07', 'Июль: ')
+            case 'June_expense':
+                month_expenses(call.message.chat.id, '06', 'Июнь: ')
+            case'May_expense':
+                month_expenses(call.message.chat.id, '05', 'Май: ')
+            case 'April_expense':
+                month_expenses(call.message.chat.id, '04', 'Апрель: ')
+            case 'March_expense':
+                month_expenses(call.message.chat.id, '03', 'Март: ')
+            case 'February_expense':
+                month_expenses(call.message.chat.id, '02', 'Февраль: ')
+            case 'January_expense':
+                month_expenses(call.message.chat.id, '01', 'Январь: ')
+            case'FAQ':
+                photo = open('FAQ.png', 'rb')
+                client.send_photo(call.message.chat.id, photo)
 
 
 ##Показаль баланс
