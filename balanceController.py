@@ -384,11 +384,36 @@ def check_for_record(tg_id, value, category, date):
         month = '0' + str(month)
     day = date.day
     hour = date.hour
+    if hour < 10:
+        hour = '0' + str(hour)
     minute = date.minute
+    if minute < 10:
+        minute = '0' + str(minute)
     check_for_record = cursor.execute("SELECT count(id) FROM records WHERE user_id = ?  and value = ? and category = ? and strftime('%Y', date) =? and strftime('%m', date) =? and strftime('%d', date) =? and strftime('%H', date) =? and strftime('%M', date) =?",
         (tg_id, value, str(category), str(year), str(month), str(day), str(hour), str(minute),))
     conn.commit()
     return check_for_record.fetchone()[0]
+
+
+def check_operation(tg_id, value, category, date):
+    conn = sqlite3.connect("users.db")
+    date = datetime.strptime(date, '%Y-%m-%d %H:%M')
+    cursor = conn.cursor()
+    year = date.year
+    month = date.month
+    if month < 10:
+        month = '0' + str(month)
+    day = date.day
+    hour = date.hour
+    if hour < 10:
+        hour = '0' + str(hour)
+    minute = date.minute
+    if minute < 10:
+        minute = '0' + str(minute)
+    check_for_operation = cursor.execute("SELECT operation FROM records WHERE user_id = ?  and value = ? and category = ? and strftime('%Y', date) =? and strftime('%m', date) =? and strftime('%d', date) =? and strftime('%H', date) =? and strftime('%M', date) =?",
+        (tg_id, value, str(category), str(year), str(month), str(day), str(hour), str(minute),))
+    conn.commit()
+    return check_for_operation.fetchone()[0]
 
 
 def delete_record(tg_id, value, category, date):
@@ -401,7 +426,11 @@ def delete_record(tg_id, value, category, date):
         month = '0' + str(month)
     day = date.day
     hour = date.hour
+    if hour < 10:
+        hour = '0' + str(hour)
     minute = date.minute
+    if minute < 10:
+        minute = '0' + str(minute)
     cursor.execute("DELETE FROM records WHERE user_id = ?  and value = ? and category = ? and strftime('%Y', date) =? and strftime('%m', date) =? and strftime('%d', date) =? and strftime('%H', date) =? and strftime('%M', date) =?",
         (tg_id, value, str(category), str(year), str(month), str(day), str(hour), str(minute),))
     conn.commit()

@@ -10,8 +10,11 @@ import urllib.request
 #Токен
 client = telebot.TeleBot(configure.config['token'])
 
+state_of_command = False
 @client.message_handler(commands = ['operation'])
 def get_user_info(message):
+    global state_of_command
+    state_of_command = True
     markup_inline = types.InlineKeyboardMarkup()
     item_add = types.InlineKeyboardButton(text = 'Доход', callback_data = 'Add')
     item_expense = types.InlineKeyboardButton(text='Расход', callback_data='Expense')
@@ -20,66 +23,76 @@ def get_user_info(message):
 
 @client.callback_query_handler(func=lambda call:True)
 def answer(call):
+    global state_of_command
     ##Запись
+    if call.data == 'Add':
+        if state_of_command == True:
+            msg = client.send_message(call.message.chat.id, 'Сколько же ты заработал, мой милый друг?\nФормат: Сумма, Категория')
+            client.register_next_step_handler(msg, change_balance, call)
+            state_of_command = False
+        else: client.send_message(call.message.chat.id, "Вы уже выбирали это")
+    elif call.data == 'Expense':
+        if state_of_command == True:
+            msg = client.send_message(call.message.chat.id, 'Какая сумма была потрачена?\nФормат: Сумма, Категория')
+            client.register_next_step_handler(msg, change_balance, call)
+            state_of_command = False
+        else: client.send_message(call.message.chat.id, "Вы уже выбирали это")
+    elif call.data == 'December':
+        month_earnings(call.message.chat.id, '12', 'Декабрь: ')
+    elif call.data == 'November':
+        month_earnings(call.message.chat.id, '11', 'Ноябрь: ')
+    elif call.data == 'October':
+        month_earnings(call.message.chat.id, '10', 'Октябрь: ')
+    elif call.data == 'September':
+        month_earnings(call.message.chat.id, '09', 'Сентябрь: ')
+    elif call.data == 'August':
+        month_earnings(call.message.chat.id, '08', 'Август: ')
+    elif call.data == 'July':
+        month_earnings(call.message.chat.id, '07', 'Июль: ')
+    elif call.data == 'June':
+        month_earnings(call.message.chat.id, '06', 'Июнь: ')
+    elif call.data == 'May':
+        month_earnings(call.message.chat.id, '05', 'Май: ')
+    elif call.data == 'April':
+        month_earnings(call.message.chat.id, '04', 'Апрель: ')
+    elif call.data == 'March':
+        month_earnings(call.message.chat.id, '03', 'Март: ')
+    elif call.data == 'February':
+        month_earnings(call.message.chat.id, '02', 'Февраль: ')
+    elif call.data == 'January':
+        month_earnings(call.message.chat.id, '01', 'Январь: ')
+        ##Расходы
+    elif call.data == 'December_expense':
+        month_expenses(call.message.chat.id, '12', 'Декабрь: ')
+    elif call.data == 'November_expense':
+        month_expenses(call.message.chat.id, '11', 'Ноябрь: ')
+    elif call.data == 'October_expense':
+        month_expenses(call.message.chat.id, '10', 'Октябрь: ')
+    elif call.data == 'September_expense':
+        month_expenses(call.message.chat.id, '09', 'Сентябрь: ')
+    elif call.data == 'August_expense':
+        month_expenses(call.message.chat.id, '08', 'Август: ')
+    elif call.data == 'July_expense':
+        month_expenses(call.message.chat.id, '07', 'Июль: ')
+    elif call.data == 'June_expense':
+        month_expenses(call.message.chat.id, '06', 'Июнь: ')
+    elif call.data == 'May_expense':
+        month_expenses(call.message.chat.id, '05', 'Май: ')
+    elif call.data == 'April_expense':
+        month_expenses(call.message.chat.id, '04', 'Апрель: ')
+    elif call.data == 'March_expense':
+        month_expenses(call.message.chat.id, '03', 'Март: ')
+    elif call.data == 'February_expense':
+        month_expenses(call.message.chat.id, '02', 'Февраль: ')
+    elif call.data == 'January_expense':
+        month_expenses(call.message.chat.id, '01', 'Январь: ')
 
-        match call.data:
-            case 'Add':
-                msg = client.send_message(call.message.chat.id, 'Сколько же ты заработал, мой милый друг?\nФормат: Сумма, Категория')
-                client.register_next_step_handler(msg, change_balance, call)
-            case 'Expense':
-                msg = client.send_message(call.message.chat.id, 'Какая сумма была потрачена?\nФормат: Сумма, Категория')
-                client.register_next_step_handler(msg, change_balance, call)
-            case 'December':
-                month_earnings(call.message.chat.id, '12', 'Декабрь: ')
-            case 'November':
-                month_earnings(call.message.chat.id, '11', 'Ноябрь: ')
-            case 'October':
-                month_earnings(call.message.chat.id, '10', 'Октябрь: ')
-            case'September':
-                month_earnings(call.message.chat.id, '09', 'Сентябрь: ')
-            case 'August':
-                month_earnings(call.message.chat.id, '08', 'Август: ')
-            case 'July':
-                month_earnings(call.message.chat.id, '07', 'Июль: ')
-            case 'June':
-                month_earnings(call.message.chat.id, '06', 'Июнь: ')
-            case 'May':
-                month_earnings(call.message.chat.id, '05', 'Май: ')
-            case 'April':
-                month_earnings(call.message.chat.id, '04', 'Апрель: ')
-            case 'March':
-                month_earnings(call.message.chat.id, '03', 'Март: ')
-            case 'February':
-                month_earnings(call.message.chat.id, '02', 'Февраль: ')
-            case 'January':
-                month_earnings(call.message.chat.id, '01', 'Январь: ')
-            case 'December_expense':
-                month_expenses(call.message.chat.id, '12', 'Декабрь: ')
-            case 'November_expense':
-                month_expenses(call.message.chat.id, '11', 'Ноябрь: ')
-            case 'October_expense':
-                month_expenses(call.message.chat.id, '10', 'Октябрь: ')
-            case 'September_expense':
-                month_expenses(call.message.chat.id, '09', 'Сентябрь: ')
-            case 'August_expense':
-                month_expenses(call.message.chat.id, '08', 'Август: ')
-            case 'July_expense':
-                month_expenses(call.message.chat.id, '07', 'Июль: ')
-            case 'June_expense':
-                month_expenses(call.message.chat.id, '06', 'Июнь: ')
-            case'May_expense':
-                month_expenses(call.message.chat.id, '05', 'Май: ')
-            case 'April_expense':
-                month_expenses(call.message.chat.id, '04', 'Апрель: ')
-            case 'March_expense':
-                month_expenses(call.message.chat.id, '03', 'Март: ')
-            case 'February_expense':
-                month_expenses(call.message.chat.id, '02', 'Февраль: ')
-            case 'January_expense':
-                month_expenses(call.message.chat.id, '01', 'Январь: ')
-            case'FAQ':
-                photo = open('FAQ.png', 'rb')
-                client.send_photo(call.message.chat.id, photo)
+
+    elif call.data == 'FAQ':
+        photo = open('FAQ.png', 'rb')
+        client.send_photo(call.message.chat.id, photo)
+    else:
+        client.send_message(call.message.chat.id, 'Где-то случилась ошибка')
 
 
 ##Показаль баланс
@@ -453,6 +466,12 @@ def delete_record(message):
                     if category[0] == ' ':
                         category = category[1:]
                     if balanceController.check_for_record(message.chat.id, value, category, date) == 1:
+                        if int(balanceController.check_operation(message.chat.id, value, category, date)) == 1:
+                            balanceController.change_balance(message.from_user.id, int(value)*-1)
+                            balanceController.add_to_all_earnings(message.from_user.id, int(value)*-1)
+                        elif int(balanceController.check_operation(message.chat.id, value, category, date)) == 0:
+                            balanceController.change_balance(message.from_user.id, int(value))
+                            balanceController.add_to_all_expense(message.from_user.id, int(value) * -1)
                         balanceController.delete_record(message.chat.id, value, category, date)
                         client.send_message(message.chat.id, 'Запись успешно удалена')
                     else: client.send_message(message.chat.id, 'Запись не найдена')

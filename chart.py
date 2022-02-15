@@ -2,8 +2,8 @@ from quickchart import QuickChart
 
 def draw_chart(labels, data):
   qc = QuickChart()
-  qc.width = 500
-  qc.height = 300
+  qc.width = 700
+  qc.height = 500
   qc.device_pixel_ratio = 2.0
 
   qc.config = {
