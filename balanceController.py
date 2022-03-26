@@ -25,6 +25,22 @@ def current_balance(tg_id):
     conn.commit()
     return currentbalance.fetchone()[0]
 
+
+def current_language(tg_id):
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    currentlanguage = cursor.execute("SELECT language FROM users WHERE user_id =?", (tg_id,))
+    conn.commit()
+    return currentlanguage.fetchone()[0]
+
+def change_language(tg_id, language):
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET language = ? WHERE user_id = ?", (language,tg_id,))
+    conn.commit()
+    conn.close()
+
+
 def current_all_earnings(tg_id):
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
@@ -434,3 +450,4 @@ def delete_record(tg_id, value, category, date):
     cursor.execute("DELETE FROM records WHERE user_id = ?  and value = ? and category = ? and strftime('%Y', date) =? and strftime('%m', date) =? and strftime('%d', date) =? and strftime('%H', date) =? and strftime('%M', date) =?",
         (tg_id, value, str(category), str(year), str(month), str(day), str(hour), str(minute),))
     conn.commit()
+

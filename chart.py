@@ -11,7 +11,7 @@ def draw_chart(labels, data):
    "data": {
      "labels": labels,
       "datasets": [{
-          "backgroundColor": ["#FF9D9D", "#E49DFF", "#9DACFF", "#9DFFE7", "#FFBE9D", "#FFC974", "#00FA9A", "#191970", "#4B0082", "#6A5ACD", "#7CFC00"],
+          "backgroundColor": ["#FF9D9D", "#E49DFF", "#9DACFF", "#9DFFE7", "#FFBE9D", "#FFC974", "#00FA9A", "#FF9D9D", "#E49DFF", "#9DACFF", "#9DFFE7", "#FFBE9D", "#FFC974", "#00FA9A", "#FF9D9D", "#E49DFF", "#9DACFF", "#9DFFE7", "#FFBE9D", "#FFC974", "#00FA9A", "#FF9D9D", "#E49DFF", "#9DACFF", "#9DFFE7", "#FFBE9D", "#FFC974", "#00FA9A"],
           "data": data
      }]
     },
